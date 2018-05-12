@@ -1,3 +1,6 @@
+# Ignore Intellij
+.idea/
+
 # Compiled class file
 *.class
 
