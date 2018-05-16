@@ -1,6 +1,9 @@
 # Ignore Intellij
 .idea/
 
+# lucene Data Ignore
+luceneData/
+
 # Compiled class file
 *.class
 

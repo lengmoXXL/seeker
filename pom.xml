@@ -7,6 +7,18 @@
     <groupId>edu.ustb</groupId>
     <artifactId>seeker</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
@@ -86,6 +98,13 @@
             <groupId>com.github.jsurfer</groupId>
             <artifactId>jsurfer-jsonsimple</artifactId>
             <version>1.4.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.7.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ustb.seeker.model.test.GreetingResponse;
 
 @RestController
+@RequestMapping("/test")
 public class Test {
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping("/test/greetings")
+    @RequestMapping("/greetings")
     public GreetingResponse greeting(@RequestParam(value="name", defaultValue="World") String name) {
         return new GreetingResponse(counter.incrementAndGet(),
                 String.format(template, name));
