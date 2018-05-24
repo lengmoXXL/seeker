@@ -1,11 +1,17 @@
 package edu.ustb.seeker.service;
 
-import com.mongodb.MongoClientURI;
+import org.bson.BsonArray;
 import org.bson.Document;
+
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 
 import java.util.ArrayList;
@@ -42,6 +48,22 @@ public class MongoContact {
         col.insertOne(Document.parse(json));
     }
 
+    public void insert(String json, String collectionName) throws ParseException {
+        MongoCollection<Document> col = this.db.getCollection(collectionName);
+        JSONParser jsonParser = new JSONParser();
+        Object docsObj = jsonParser.parse(json);
+        if (docsObj instanceof JSONObject) {
+            col.insertOne(Document.parse(docsObj.toString()));
+        } else {
+            JSONArray jsonArray = (JSONArray) docsObj;
+            List<Document> documents = new ArrayList<>();
+            for (Object docObj: jsonArray) {
+                documents.add(Document.parse(docObj.toString()));
+            }
+            col.insertMany(documents);
+        }
+    }
+
     public List<Document> find(String collectionName) {
         MongoCollection<Document> col = this.db.getCollection(collectionName);
         List<Document> ret = new ArrayList<Document>();
@@ -56,6 +78,18 @@ public class MongoContact {
         List<Document> ret = new ArrayList<Document>();
         for (Document doc: col.find(Document.parse(queryJson))) {
             ret.add(doc);
+        }
+        return ret;
+    }
+
+    public List<Document> find(String queryJson, String collectionName, int from, int size) {
+        MongoCollection<Document> col = this.db.getCollection(collectionName);
+        List<Document> ret = new ArrayList<Document>();
+        int currentPosition = 0;
+        for (Document doc: col.find(Document.parse(queryJson))) {
+            if (from <= currentPosition && currentPosition < from + size)
+                ret.add(doc);
+            currentPosition++;
         }
         return ret;
     }

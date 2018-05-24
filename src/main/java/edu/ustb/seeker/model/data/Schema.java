@@ -15,7 +15,7 @@ public class Schema {
         this.fields = fields;
     }
 
-    Schema() {
+    public Schema() {
         fields = new ArrayList<>();
     }
 
@@ -24,6 +24,17 @@ public class Schema {
         for (int i = 0; i < names.size(); i++) {
             fields.add(new SchemaField(names.get(i), types.get(i)));
         }
+    }
+
+    public void append(Schema schema) {
+        for (SchemaField schemaField: schema.getFields()) {
+            append(new SchemaField(schemaField.getFieldName(), schemaField.getFieldType()));
+        }
+    }
+
+    public void append(SchemaField schemaField) {
+        if (!fields.contains(schemaField))
+            fields.add(schemaField);
     }
 
     @Override

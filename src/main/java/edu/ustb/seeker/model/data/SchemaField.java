@@ -7,7 +7,7 @@ public class SchemaField {
     private String fieldName;
     private int fieldType;
 
-    SchemaField(String name, int type) {
+    public SchemaField(String name, int type) {
         this.fieldName = name;
         this.fieldType = type;
     }
@@ -31,5 +31,17 @@ public class SchemaField {
     @Override
     public String toString() {
         return fieldName + ":" + fieldType;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof  SchemaField) {
+            SchemaField schemaField = (SchemaField)obj;
+            if (fieldName.equals(schemaField.fieldName) &&
+                    fieldType == schemaField.fieldType) {
+                return true;
+            }
+        }
+        return super.equals(obj);
     }
 }

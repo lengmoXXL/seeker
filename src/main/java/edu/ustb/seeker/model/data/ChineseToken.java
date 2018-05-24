@@ -11,22 +11,18 @@ public class ChineseToken {
     private nerTag ner;
     private posTag pos;
 
-    private ChinesePhraseLib phraseLib;
-
-    public ChineseToken(int index, String value, nerTag ner, posTag pos, ChinesePhraseLib phraseLib) {
+    public ChineseToken(int index, String value, String pos, String ner) {
         this.index = index;
         this.value = value;
-        this.ner = ner;
-        this.pos = pos;
-        this.phraseLib = phraseLib;
+        this.pos = Enum.valueOf(posTag.class, pos);
+        this.ner = Enum.valueOf(nerTag.class, ner);
     }
 
     public ChineseToken(String value) {
         this.index = -1;
         this.value = value;
-        this.ner = nerTag.OTHER;
-        this.pos = posTag.OTHER;
-        this.phraseLib = null;
+        this.ner = nerTag.O;
+        this.pos = posTag.O;
     }
 
     public int getIndex() {
@@ -59,13 +55,5 @@ public class ChineseToken {
 
     public void setPos(posTag pos) {
         this.pos = pos;
-    }
-
-    public ChinesePhraseLib getPhraseLib() {
-        return phraseLib;
-    }
-
-    public void setPhraseLib(ChinesePhraseLib phraseLib) {
-        this.phraseLib = phraseLib;
     }
 }

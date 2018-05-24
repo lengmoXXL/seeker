@@ -1,11 +1,20 @@
 package edu.ustb.seeker.model.data;
 
 public enum posTag {
-    NN("NN"), VV("VV"), NR("NR"), CC("CC"),
-    OTHER("0");
+    AD("AD"),
+    CC("CC"), CD("CD"), CS("CS"),
+    DEV("DEV"), DT("DT"), DEG("DEG"), DEC("DEC"),
+    LC("LC"),
+    JJ("JJ"),
+    M("M"), MSP("MSP"),
+    NT("NT"), NR("NR"), NN("NN"),
+    PU("PU"), PN("PN"), P("P"),
+    VV("VV"), VC("VC"), VA("VA"), VE("VE"),
+    SP("SP"),
+    O("O");
 
     private String value;
-    private posTag(String value) {
+    posTag(String value) {
         this.value = value;
     }
 }

@@ -1,13 +1,13 @@
 package edu.ustb.seeker.model.response;
 
 public class MongoResult {
-    private final String result;
+    private final String status;
 
-    public MongoResult(String result) {
-        this.result = result;
+    public MongoResult(String status) {
+        this.status = status;
     }
 
     public String getResult() {
-        return result;
+        return status;
     }
 }

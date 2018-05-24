@@ -44,6 +44,90 @@ public class SemanticPhrase {
         }
     }
 
+    public void combine(SemanticPhrase sp) {
+        switch(sp.getState()) {
+            case Lt:
+                if (this.state == Equ) {
+                    this.state = Lte;
+                }
+                return;
+            case Gt:
+                if (this.state == Equ) {
+                    this.state = Gte;
+                }
+                return;
+            case Lte:
+                return;
+            case Gte:
+                return;
+            case Equ:
+                if (this.state == Lt) {
+                    this.state = Lte;
+                } else if (this.state == Gt) {
+                    this.state = Gte;
+                }
+                return;
+            case nEqu:
+                return;
+            case Contain:
+                return;
+            case nContain:
+                return;
+            case Not:
+                this.flip();
+                return;
+            case At:
+                return;
+            case And:
+                return;
+            case Or:
+                return;
+            case Range:
+                return;
+            case Other:
+                return;
+            default:
+                return;
+        }
+    }
+
+    public boolean isOperation() {
+        switch (state) {
+            case Other:
+            case Or:
+            case And:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    public void flip() {
+        if (this.state == Lt) {
+            this.state = Gte;
+        } else if (this.state == Gte) {
+            this.state = Lt;
+        } else if (this.state == Gt) {
+            this.state = Lte;
+        } else if (this.state == Contain) {
+            this.state = nContain;
+        } else if (this.state == nContain) {
+            this.state = Contain;
+        } else if (this.state == Equ) {
+            this.state = nEqu;
+        } else if (this.state == nEqu) {
+            this.state = Equ;
+        }
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public boolean isRange() {
+        return this.state == Range;
+    }
+
     @Override
     public String toString() {
         switch (this.state) {
