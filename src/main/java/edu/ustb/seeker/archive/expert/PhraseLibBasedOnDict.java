@@ -1,6 +1,7 @@
 package edu.ustb.seeker.archive.expert;
 
 import edu.ustb.seeker.model.data.*;
+import edu.ustb.seeker.service.LuceneContact;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -113,6 +114,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
 
     private TokenSimilarGraph g;
     private HashSet<String> stopDict;
+    private LuceneContact luceneContact;
     private static Map<String, HashSet<String>> importantDict;
     private static final double alpha = 0.8;
 
@@ -158,6 +160,8 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         }
 
         this.chineseGrammar = chineseGrammar;
+
+        this.luceneContact = new LuceneContact("luceneData/schemas");
     }
 
     private void travel(DependentTreeNode v, List<ChineseToken> toAdd) {
@@ -168,6 +172,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         }
     }
 
+    @Override
     public SemanticNode parseSemanticNode(ChineseSentence sentence) {
         DependentTreeNode root = sentence.getDependentTree().getRoot();
         List<ChineseToken> tokens = sentence.getTokens();
@@ -204,7 +209,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         return new SemanticNode(operation, field, value);
     }
 
-    public Schema extractData(JSONObject document, String prefix) {
+    private Schema extractData(JSONObject document, String prefix) {
         Schema ret = new Schema();
         Set<String> keys = document.keySet();
         for (String key: keys) {
@@ -236,7 +241,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         return ret;
     }
 
-    public void extractData(String data) {
+    private List<Schema> extractData(String data) {
         Object jsonObj = JSONValue.parse(data);
         List<Schema> schemas = new ArrayList<>();
         if (jsonObj instanceof JSONArray) {
@@ -247,6 +252,17 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         } else {
             JSONObject document = (JSONObject) jsonObj;
             schemas.add(extractData(document, ""));
+        }
+        return schemas;
+    }
+
+    @Override
+    public void updateSchemas(String data) throws IOException {
+        List<Schema> schemas = extractData(data);
+        for (Schema schema: schemas) {
+            if (!luceneContact.exist(schema)) {
+                luceneContact.addSchema(schema);
+            }
         }
     }
 

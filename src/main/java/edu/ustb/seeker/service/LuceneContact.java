@@ -7,14 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -43,16 +41,11 @@ public class LuceneContact {
         for (int i = 0; i < hits.length; i++) {
             Document hitDoc = is.doc(hits[i].doc);
             List<String> names = new ArrayList<>();
-            List<Integer> types = new ArrayList<>();
-            for (IndexableField f: hitDoc.getFields("key")) {
-                names.add(f.stringValue());
-            }
+            List<String> types = new ArrayList<>();
             for (IndexableField f: hitDoc.getFields("type")) {
-                if (f.stringValue().equals("string")) {
-                    types.add(SchemaField.STRING);
-                } else {
-                    types.add(SchemaField.NUMBER);
-                }
+                String[] tmp = f.stringValue().split("@");
+                names.add(tmp[0]);
+                types.add(tmp[1]);
             }
             ret.add(new Schema(names, types));
         }
@@ -61,8 +54,53 @@ public class LuceneContact {
         return ret;
     }
 
+    public void addSchema(Schema schema) throws IOException {
+        Analyzer analyzer = new KeywordAnalyzer();
+        Directory dir = FSDirectory.open(this.libPath);
+
+        IndexWriterConfig conf =new IndexWriterConfig(analyzer);
+        IndexWriter iw = new IndexWriter(dir, conf);
+
+        Document doc = new Document();
+        for (SchemaField schemaField: schema.getFields()) {
+            String type = "OTHER";
+            if (schemaField.getFieldType() == SchemaField.NUMBER) {
+                type = "NUMBER";
+            } else if (schemaField.getFieldType() == SchemaField.STRING) {
+                type = "STRING";
+            }
+            doc.add(new Field("type", schemaField.getFieldName() + '@' + type, TextField.TYPE_STORED));
+        }
+        iw.addDocument(doc);
+        iw.close();
+    }
+
+    public boolean exist(Schema schema) throws IOException {
+        Directory dir = FSDirectory.open(libPath);
+        DirectoryReader ir = DirectoryReader.open(dir);
+        IndexSearcher is = new IndexSearcher(ir);
+
+        List<TermQuery> termQueries = new ArrayList<>();
+        for (SchemaField schemaField: schema.getFields()) {
+            termQueries.add(new TermQuery(new Term("type", schemaField.getFieldName() + '@' + schemaField.getFieldTypeName())));
+        }
+
+        BooleanQuery.Builder booleanQueryBuilder = new BooleanQuery.Builder();
+        for (TermQuery termQuery: termQueries) {
+            booleanQueryBuilder.add(termQuery, BooleanClause.Occur.MUST);
+        }
+
+        BooleanQuery booleanQuery = booleanQueryBuilder.build();
+        ScoreDoc[] hits = is.search(booleanQuery, this.maxReturnSchemas, Sort.RELEVANCE).scoreDocs;
+
+        ir.close();
+        dir.close();
+        boolean ret = hits.length > 0 ? true: false;
+        return ret;
+    }
+
     public void addWhatEver(String[] names, String[] types) throws IOException {
-        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new KeywordAnalyzer();
         Directory dir = FSDirectory.open(this.libPath);
 
         IndexWriterConfig conf =new IndexWriterConfig(analyzer);
@@ -70,8 +108,7 @@ public class LuceneContact {
 
         Document doc = new Document();
         for (int i = 0; i < names.length; i++) {
-            doc.add(new Field("key", names[i], TextField.TYPE_STORED));
-            doc.add(new Field("type", types[i], TextField.TYPE_STORED));
+            doc.add(new Field("type", names[i] + '@' + types[i], TextField.TYPE_STORED));
         }
 
         iw.addDocument(doc);
@@ -81,9 +118,12 @@ public class LuceneContact {
 
     public static void main(String[] args) throws IOException {
         String[] texts = {"类型", "名称", "缩写", "省会城市", "人口", "面积", "城市.名称", "城市.人口", "边界省份", "山.名称", "山.海拔"};
-        String[] types = {"string", "string", "string", "string", "number", "number", "string", "number", "string", "string", "number"};
+        String[] types = {"STRING", "STRING", "STRING", "STRING", "NUMBER", "NUMBER", "STRING", "NUMBER", "STRING", "STRING", "NUMBER"};
         LuceneContact lc = new LuceneContact("luceneData/schemas");
-        lc.addWhatEver(texts, types);
+//        lc.addWhatEver(texts, types);
+        Schema schema = new Schema(texts, types);
+//        lc.addSchema(schema);
+        System.out.println(lc.exist(schema));
         System.out.println(lc.allSchemas());
     }
 }

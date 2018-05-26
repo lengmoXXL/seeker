@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class MongoTranslator {
+    private ChineseGrammar chineseGrammar;
     private ChinesePhraseLib chinesePhraseLib;
 
-    public MongoTranslator(ChinesePhraseLib chinesePhraseLib) {
+    public MongoTranslator(ChineseGrammar chineseGrammar, ChinesePhraseLib chinesePhraseLib) {
+        this.chineseGrammar = chineseGrammar;
         this.chinesePhraseLib = chinesePhraseLib;
     }
 
@@ -105,29 +107,40 @@ public class MongoTranslator {
         return null;
     }
 
-    public static void main(String[] args) throws IOException {
-        ChineseGrammar cg = new ChineseGrammar();
-        ChinesePhraseLib cpl = new PhraseLibBasedOnDict(cg);
-        MongoTranslator translator = new MongoTranslator(cpl);
-        String input = "面积大于100，人口小于100000。";
-        LogicStructure ls = new LogicStructure(cg, cpl);
+    public List<String> translate(String input) throws IOException {
+        LogicStructure logicStructure = new LogicStructure(chineseGrammar, chinesePhraseLib);
         for (String subInput: input.split("。")) {
             List<ChineseSentence> sentences = new ArrayList<>();
             for (String sentence: subInput.split("，")) {
-                sentences.add(cg.parseSentence(sentence));
+                sentences.add(chineseGrammar.parseSentence(sentence));
             }
-            ls.add(sentences);
+            logicStructure.add(sentences);
         }
 
+        Set<String> translations = new HashSet<>();
         List<Schema> schemas = new ArrayList<>();
         LuceneContact luceneContact = new LuceneContact("luceneData/schemas");
         for (Schema s: luceneContact.allSchemas()) {
-            if (translator.findMatch(ls, s) != null) {
+            if (findMatch(logicStructure, s) != null) {
                 schemas.add(s);
             }
         }
         for (Schema s: schemas) {
-            System.out.println(translator.toMongo(ls, s));
+            translations.add(toMongo(logicStructure, s).toJSONString());
         }
+
+        List<String> ret = new ArrayList<>();
+        for (String string: translations) {
+            ret.add(string);
+        }
+        return ret;
+    }
+
+    public static void main(String[] args) throws IOException {
+        ChineseGrammar cg = new ChineseGrammar();
+        ChinesePhraseLib cpl = new PhraseLibBasedOnDict(cg);
+        MongoTranslator translator = new MongoTranslator(cg, cpl);
+        String input = "河流的长度小于1万米。";
+        System.out.println(translator.translate(input));
     }
 }

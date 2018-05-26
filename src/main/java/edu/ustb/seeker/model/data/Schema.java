@@ -19,10 +19,36 @@ public class Schema {
         fields = new ArrayList<>();
     }
 
-    public Schema(List<String> names, List<Integer> types) {
+    public Schema(String[] names, int[] types) {
+        fields = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            fields.add(new SchemaField(names[i], types[i]));
+        }
+    }
+
+    public Schema(String[] names, String[] types) {
+        fields = new ArrayList<>();
+        for (int i = 0; i < names.length; i++) {
+            int type = SchemaField.NUMBER;
+            if (types[i].equals("NUMBER")) {
+                type = SchemaField.NUMBER;
+            } else if (types[i].equals("STRING")) {
+                type = SchemaField.STRING;
+            }
+            fields.add(new SchemaField(names[i], type));
+        }
+    }
+
+    public Schema(List<String> names, List<String> types) {
         fields = new ArrayList<>();
         for (int i = 0; i < names.size(); i++) {
-            fields.add(new SchemaField(names.get(i), types.get(i)));
+            int type = SchemaField.NUMBER;
+            if (types.get(i).equals("NUMBER")) {
+                type = SchemaField.NUMBER;
+            } else if (types.get(i).equals("STRING")) {
+                type = SchemaField.STRING;
+            }
+            fields.add(new SchemaField(names.get(i), type));
         }
     }
 

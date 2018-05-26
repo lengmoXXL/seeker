@@ -1,8 +1,18 @@
 package edu.ustb.seeker.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ustb.seeker.archive.expert.ChineseGrammar;
+import edu.ustb.seeker.archive.expert.ChinesePhraseLib;
+import edu.ustb.seeker.archive.expert.MongoTranslator;
+import edu.ustb.seeker.archive.expert.PhraseLibBasedOnDict;
+import edu.ustb.seeker.model.data.ChineseSentence;
+import edu.ustb.seeker.model.data.LogicStructure;
+import edu.ustb.seeker.model.data.Schema;
+import edu.ustb.seeker.model.response.MongoNLResults;
+import edu.ustb.seeker.service.LuceneContact;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.*;
 import org.bson.Document;
@@ -16,9 +26,17 @@ import edu.ustb.seeker.model.response.MongoFindResults;
 @RequestMapping("/mongodb")
 public class MongoController {
     private MongoContact mc;
-    MongoController() {
-        mc = new MongoContact("mongodb://seeker:seeker@192.168.56.129:27017/?authSource=seeker");
-        mc.setDatabase("seeker");
+    private ChineseGrammar chineseGrammar;
+    private ChinesePhraseLib chinesePhraseLib;
+    private MongoTranslator translator;
+
+    MongoController() throws IOException {
+        this.mc = new MongoContact("mongodb://seeker:seeker@192.168.56.129:27017/?authSource=seeker");
+        this.mc.setDatabase("seeker");
+
+        this.chineseGrammar = new ChineseGrammar();
+        this.chinesePhraseLib = new PhraseLibBasedOnDict(this.chineseGrammar);
+        this.translator = new MongoTranslator(this.chineseGrammar, this.chinesePhraseLib);
     }
 
     @RequestMapping("/insertOne")
@@ -41,7 +59,7 @@ public class MongoController {
                             @RequestParam(value="nlQuery", defaultValue = "") String nlQuery,
                             @RequestParam(value="from", defaultValue = "0") int from,
                             @RequestParam(value="size", defaultValue = "10") int size,
-                            @RequestParam(value="returnDocuments", defaultValue = "true") boolean returnDocuments) {
+                            @RequestParam(value="returnDocuments", defaultValue = "false") boolean returnDocuments) throws IOException{
         List<String> collections = mc.showCollections();
         if (collections.contains(collection)) {
             if (nlQuery.length() == 0) {
@@ -49,7 +67,12 @@ public class MongoController {
                         mc.count(query, collection),
                         returnDocuments ? mc.find(query, collection, from, size) : new ArrayList<Document>());
             } else {
-                return new MongoResult("Not Implemented yet.");
+                List<String> translations = translator.translate(nlQuery);
+                if (returnDocuments) {
+                    return new MongoResult("Not Implemented yet.");
+                } else {
+                    return new MongoNLResults("ok", translations, 0, new ArrayList<Document>());
+                }
             }
         } else {
             return new MongoResult("No collection found.");
@@ -57,8 +80,9 @@ public class MongoController {
     }
 
     @RequestMapping(value = "/{collection}", method=RequestMethod.POST)
-    public MongoResult insert(@PathVariable String collection, @RequestBody String body) throws ParseException {
+    public MongoResult insert(@PathVariable String collection, @RequestBody String body) throws ParseException, IOException {
         mc.insert(body, collection);
+        chinesePhraseLib.updateSchemas(body);
         return new MongoResult("ok");
     }
 }

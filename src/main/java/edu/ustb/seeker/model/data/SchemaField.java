@@ -28,6 +28,16 @@ public class SchemaField {
         this.fieldType = fieldType;
     }
 
+    public String getFieldTypeName() {
+        if (fieldType == NUMBER) {
+            return "NUMBER";
+        } else if (fieldType == STRING) {
+            return "STRING";
+        } else {
+            return "OTHER";
+        }
+    }
+
     @Override
     public String toString() {
         return fieldName + ":" + fieldType;
