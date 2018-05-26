@@ -4,10 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.ustb.seeker.archive.expert.ChineseGrammar;
-import edu.ustb.seeker.archive.expert.ChinesePhraseLib;
-import edu.ustb.seeker.archive.expert.MongoTranslator;
-import edu.ustb.seeker.archive.expert.PhraseLibBasedOnDict;
+import edu.ustb.seeker.archive.expert.*;
 import edu.ustb.seeker.model.data.ChineseSentence;
 import edu.ustb.seeker.model.data.LogicStructure;
 import edu.ustb.seeker.model.data.Schema;
@@ -35,7 +32,7 @@ public class MongoController {
         this.mc.setDatabase("seeker");
 
         this.chineseGrammar = new ChineseGrammar();
-        this.chinesePhraseLib = new PhraseLibBasedOnDict(this.chineseGrammar);
+        this.chinesePhraseLib = new PhraseLibExtendedHowNet(this.chineseGrammar);//new PhraseLibBasedOnDict(this.chineseGrammar);
         this.translator = new MongoTranslator(this.chineseGrammar, this.chinesePhraseLib);
     }
 
