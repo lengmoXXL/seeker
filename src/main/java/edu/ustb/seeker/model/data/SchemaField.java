@@ -1,8 +1,19 @@
 package edu.ustb.seeker.model.data;
 
 public class SchemaField {
-    static public final int STRING = 1;
-    static public final int NUMBER  = 2;
+    public static final int STRING = 1;
+    public static final int NUMBER  = 2;
+    public static final int OTHER = 3;
+
+    public static int getType(String type) {
+        if (type.equals("STRING")) {
+            return STRING;
+        } else if (type.equals("NUMBER")) {
+            return NUMBER;
+        } else {
+            return OTHER;
+        }
+    }
 
     private String fieldName;
     private int fieldType;
