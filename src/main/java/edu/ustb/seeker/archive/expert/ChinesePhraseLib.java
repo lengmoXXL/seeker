@@ -12,6 +12,9 @@ public interface ChinesePhraseLib {
     public SemanticNode parseSemanticNode(ChineseSentence sentence);
 
     public SemanticPhrase getSemanticType(ChineseToken u);
+    public void annotateSemanticType(ChineseSentence sentence);
+
+    public Object parse(String string, int type);
 
     public void updateSchemas(String data) throws IOException;
 

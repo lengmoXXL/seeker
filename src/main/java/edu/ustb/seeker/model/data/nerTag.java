@@ -7,4 +7,9 @@ public enum nerTag {
     nerTag(String value) {
         this.value = value;
     }
+
+    public boolean equals(String string) {
+        if (this.value.equals(string)) return true;
+        else return false;
+    }
 }

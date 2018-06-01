@@ -1,4 +1,3 @@
-{Contain}(<??*>in/STRING"，")*<??*>in/STRING{And}<??*>in/STRING
 {Lt}<[NUMBER]>lt/NUMBER
 {Lt}{Equ}<[NUMBER]>lte/NUMBER
 {Lte}<[NUMBER]>lte/NUMBER
@@ -6,5 +5,4 @@
 {Gte}<[NUMBER]>gte/NUMBER
 {Equ}<[NUMBER]>equ/NUMBER
 "在"<[NUMBER]>gt/NUMBER{And}<[NUMBER]>lt/NUMBER{Range}
-"在"<[NUMBER]>gt/NUMBER{Range}<[NUMBER]>lt/NUMBER
-{Equ}<(??*)>equ/STRING
+"在"<[NUMBER]>gt/NUMBER{Range}<[NUMBER]>lt/NUMBER{Range}

@@ -326,6 +326,25 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
     }
 
     @Override
+    public void annotateSemanticType(ChineseSentence sentence) {
+        for (ChineseToken token: sentence.getTokens()) {
+            token.setSemanticPhrase(getSemanticType(token));
+        }
+    }
+
+    @Override
+    public Object parse(String string, int type) {
+        switch(type) {
+            case SchemaField.STRING:
+                return string;
+            case SchemaField.NUMBER:
+                return parser2Number(new ChineseToken(string));
+            default:
+                return null;
+        }
+    }
+
+    @Override
     public boolean isNumber(ChineseToken u) {
         return u.getNer() == nerTag.NUMBER;
     }

@@ -11,6 +11,8 @@ public class ChineseToken {
     private nerTag ner;
     private posTag pos;
 
+    private SemanticPhrase semanticPhrase;
+
     public ChineseToken(int index, String value, String pos, String ner) {
         this.index = index;
         this.value = value;
@@ -55,5 +57,12 @@ public class ChineseToken {
 
     public void setPos(posTag pos) {
         this.pos = pos;
+    }
+
+    public void setSemanticPhrase(SemanticPhrase semanticPhrase) {
+        this.semanticPhrase = semanticPhrase;
+    }
+    public SemanticPhrase getSemanticPhrase() {
+        return this.semanticPhrase;
     }
 }

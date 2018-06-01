@@ -1,5 +1,6 @@
 package edu.ustb.seeker.archive.valuerules;
 
+import edu.ustb.seeker.model.data.ChineseToken;
 import edu.ustb.seeker.model.data.SchemaField;
 
 public class RuleGraphEdge {
@@ -70,7 +71,37 @@ public class RuleGraphEdge {
         return true;
     }
 
+    public boolean match(ChineseToken token) {
+        switch (type) {
+            case EMPTY:
+                return false;
+            case ALL:
+                if ("，。、：！@#￥%……&*（）".contains(token.getValue())) return false;
+                return true;
+            case WORD:
+                return token.getValue().equals(tag);
+            case SEMANTIC:
+                return token.getSemanticPhrase().equals(tag);
+            case NER:
+                return token.getNer().equals(tag);
+            default:
+                return false;
+        }
+    }
+
     public RuleGraphNode getTo() {
         return this.to;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getTransformType() {
+        return transformType;
+    }
+
+    public String getExtractVariableName() {
+        return extractVariableName;
     }
 }

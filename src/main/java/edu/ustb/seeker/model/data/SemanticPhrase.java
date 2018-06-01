@@ -163,4 +163,12 @@ public class SemanticPhrase {
                 return "Other";
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof String) {
+            return toString().equals((String)o);
+        }
+        return super.equals(o);
+    }
 }

@@ -1,0 +1,2 @@
+{Equ}<(??*)>equ/STRING
+{Contain}(<??*>in/STRING"，")*<??*>in/STRING{And}<??*>in/STRING

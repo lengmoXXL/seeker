@@ -1,5 +1,7 @@
 package edu.ustb.seeker.archive.valuerules;
 
+import edu.ustb.seeker.archive.expert.ChinesePhraseLib;
+import edu.ustb.seeker.archive.expert.PhraseLibExtendedHowNet;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -14,6 +16,16 @@ public class ExtractVariablePool {
         map = new HashMap<>();
     }
 
+    public ExtractVariablePool(ExtractVariablePool extractVariablePool) {
+        map = new HashMap<>();
+        for (Map.Entry<String, List<Object>> entry: extractVariablePool.getMap().entrySet()) {
+            Object[] objects = entry.getValue().toArray();
+            List<Object> values = new ArrayList<>();
+            for (Object obj: objects) values.add(obj);
+            map.put(entry.getKey(), values);
+        }
+    }
+
     public void add(String name, Object obj) {
         List<Object> toAdd;
         if (map.containsKey(name)) {
@@ -21,6 +33,7 @@ public class ExtractVariablePool {
         } else {
             toAdd = new ArrayList<>();
         }
+        toAdd.add(obj);
         map.put(name, toAdd);
     }
 
@@ -36,5 +49,9 @@ public class ExtractVariablePool {
             }
         }
         return ret;
+    }
+
+    public Map<String, List<Object>> getMap() {
+        return map;
     }
 }
