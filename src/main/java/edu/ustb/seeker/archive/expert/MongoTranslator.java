@@ -29,7 +29,7 @@ public class MongoTranslator {
                     maxField = sf;
                 }
             }
-            if (maxField == null)
+            if (maxField == null || score < 0.5)
                 return null;
             else {
                 ret.put(sn, maxField);
@@ -113,6 +113,9 @@ public class MongoTranslator {
             List<ChineseSentence> sentences = new ArrayList<>();
             for (String sentence: subInput.split("，")) {
                 sentences.add(chineseGrammar.parseSentence(sentence));
+            }
+            for (ChineseSentence sentence: sentences) {
+                chinesePhraseLib.annotateSemanticType(sentence);
             }
             logicStructure.add(sentences);
         }

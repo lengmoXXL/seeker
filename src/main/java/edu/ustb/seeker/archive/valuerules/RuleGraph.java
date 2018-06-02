@@ -54,7 +54,7 @@ public class RuleGraph {
         queue.add(new TravelState(getRoot(), 0, new ExtractVariablePool(), new Stack<Integer>()));
         while (!queue.isEmpty()) {
             TravelState travelState = queue.poll();
-            if (travelState.getWordIndex() >= tokens.size() && travelState.getCurrentNode().isAccept()) {
+            if (travelState.getWordIndex() >= tokens.size() && travelState.getStack().size() == 0 && travelState.getCurrentNode().isAccept()) {
                 return travelState.getVariablePool();
             }
             travelState.getCurrentNode().extend(tokens, travelState, queue);

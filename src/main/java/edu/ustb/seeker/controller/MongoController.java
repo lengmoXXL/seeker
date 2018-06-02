@@ -32,8 +32,10 @@ public class MongoController {
         this.mc.setDatabase("seeker");
 
         this.chineseGrammar = new ChineseGrammar();
-        this.chinesePhraseLib = new PhraseLibExtendedHowNet(this.chineseGrammar);//new PhraseLibBasedOnDict(this.chineseGrammar);
-        this.translator = new MongoTranslator(this.chineseGrammar, this.chinesePhraseLib);
+        //new PhraseLibBasedOnDict(this.chineseGrammar);
+        this.chinesePhraseLib = new PhraseLibExtendedHowNet(this.chineseGrammar);
+        //new MongoTranslator(this.chineseGrammar, this.chinesePhraseLib);
+        this.translator = new MongoTranslatorExtendRules(this.chineseGrammar, this.chinesePhraseLib);
     }
 
     @RequestMapping("/insertOne")

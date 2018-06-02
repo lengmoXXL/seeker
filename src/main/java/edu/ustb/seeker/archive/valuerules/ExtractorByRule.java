@@ -63,15 +63,18 @@ public class ExtractorByRule {
                     left = right;
                 }
             } else if ('?' == line.charAt(right)) {
+                if (left != right && line.charAt(left) == '>') ret.add(line.substring(left, right));
                 ret.add("?");
                 right ++; left = right;
             } else if ('*' == line.charAt(right)) {
                 ret.add("*");
                 right ++; left = right;
             } else if ("()".contains("" + line.charAt(right))) {
+                if (left != right && line.charAt(left) == '>') ret.add(line.substring(left, right));
                 ret.add("" + line.charAt(right));
                 right ++; left = right;
             } else if ('<' == line.charAt(right)) {
+                if (left != right && line.charAt(left) == '>') ret.add(line.substring(left, right));
                 ret.add("" + line.charAt(right));
                 right ++; left = right;
             } else if ('>' == line.charAt(right)) {
@@ -105,14 +108,14 @@ public class ExtractorByRule {
         ExtractorByRule extractorByRule = new ExtractorByRule(chinesePhraseLib);
         ChineseSentence sentence = chineseGrammar.parseSentence("在10到100之间");
         chinesePhraseLib.annotateSemanticType(sentence);
-        System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.STRING));
+        System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.NUMBER));
         Scanner scan = new Scanner(System.in);
         while (true) {
             String input = scan.nextLine();
             System.out.println(input);
             sentence = chineseGrammar.parseSentence(input);
             chinesePhraseLib.annotateSemanticType(sentence);
-            System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.STRING));
+            System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.NUMBER));
         }
     }
 }

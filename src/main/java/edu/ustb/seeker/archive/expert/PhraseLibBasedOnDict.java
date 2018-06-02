@@ -202,7 +202,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
             }
         }
         for (ChineseToken token: tokens) {
-            if (!field.contains(token)) {
+            if (!field.contains(token) && !isStopPhrase(token)) {
                 value.add(token);
             }
         }

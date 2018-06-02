@@ -1,8 +1,9 @@
-{Lt}<[NUMBER]>lt/NUMBER
-{Lt}{Equ}<[NUMBER]>lte/NUMBER
-{Lte}<[NUMBER]>lte/NUMBER
-{Gt}<[NUMBER]>gt/NUMBER
-{Gte}<[NUMBER]>gte/NUMBER
-{Equ}<[NUMBER]>equ/NUMBER
-"在"<[NUMBER]>gt/NUMBER{And}<[NUMBER]>lt/NUMBER{Range}
-"在"<[NUMBER]>gt/NUMBER{Range}<[NUMBER]>lt/NUMBER{Range}
+{Lt}<[NUMBER]>lt/NUMBER?*
+{Lt}{Equ}<[NUMBER]>lte/NUMBER?*
+{Lte}<[NUMBER]>lte/NUMBER?*
+{Gt}<[NUMBER]>gt/NUMBER?*
+{Gt}{Equ}<[NUMBER]>gte/NUMBER?*
+{Gte}<[NUMBER]>gte/NUMBER?*
+{Equ}<[NUMBER]>equ/NUMBER?*
+{Equ}<[NUMBER]>gt/NUMBER{And}<[NUMBER]>lt/NUMBER{Range}*?*
+{Equ}<[NUMBER]>gt/NUMBER{Range}<[NUMBER]>lt/NUMBER{Range}*?*
