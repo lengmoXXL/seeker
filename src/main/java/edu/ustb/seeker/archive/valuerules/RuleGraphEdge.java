@@ -76,7 +76,7 @@ public class RuleGraphEdge {
             case EMPTY:
                 return false;
             case ALL:
-                if ("，。、：！@#￥%……&*（）".contains(token.getValue())) return false;
+                if ("，。；、：！@#￥%……&*（）".contains(token.getValue())) return false;
                 if (token.getNer().equals("NUMBER")) return false;
                 if (!token.getSemanticPhrase().equals("Other")) return false;
                 return true;

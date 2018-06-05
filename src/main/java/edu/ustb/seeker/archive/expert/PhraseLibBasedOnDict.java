@@ -215,7 +215,7 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         for (String key: keys) {
             Object jsonObj = document.get(key);
             if (jsonObj instanceof JSONObject) {
-                ret.append(extractData((JSONObject) jsonObj, prefix + key));
+                ret.append(extractData((JSONObject) jsonObj, prefix + "." + key));
             } else if (jsonObj instanceof JSONArray) {
                 for (Object obj: (JSONArray) jsonObj) {
                     if (obj instanceof String) {
@@ -445,5 +445,11 @@ public class PhraseLibBasedOnDict implements ChinesePhraseLib {
         String json = "{\"河流名称\": \"长江\",\"河流长度(米)\": 6397000,\"河流流经地区\": [\"青海省\", \"西藏省\", \"四川省\", \"云南省\", \"重庆市\", \"湖北省\", \"湖南省\", \"江西省\", \"安徽省\", \"江苏省\", \"上海市\"] }";
         cp.extractData(json);
 //        System.out.println(cp.getSemanticType(new ChineseToken("之间")));
+
+        String[] w1 = {"书籍", "部队", "产业", "教师", "剪刀", "书本", "乡村", "大小"};
+        String[] w2 = {"杂志", "军队", "工业", "老师", "荧光笔", "书籍", "城市", "面积"};
+        for (int i = 0; i < w1.length; i++) {
+            System.out.println("(" + w1[i] + "," + w2[i] + "):" + cp.similarityOf(new ChineseToken(w1[i]), new ChineseToken(w2[i])));
+        }
     }
 }

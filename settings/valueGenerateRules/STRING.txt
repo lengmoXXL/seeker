@@ -1,2 +1,3 @@
-{Equ}<(??*)>equ/STRING
-{Contain}(<??*>in/STRING"，")*<??*>in/STRING{And}<??*>in/STRING
+{Equ}<(??*)>$eq/STRING
+{Contain}(<??*>$in/STRING"，")*<??*>$in/STRING{And}<??*>$in/STRING
+{Contain}<??*>$in/STRING

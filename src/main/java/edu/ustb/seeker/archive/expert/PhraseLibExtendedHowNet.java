@@ -12,6 +12,7 @@ public class PhraseLibExtendedHowNet extends PhraseLibBasedOnDict {
 
     @Override
     public double similarityOf(ChineseToken u, ChineseToken v) {
-        return WordSimilarity.simWord(u.getValue(), v.getValue());
+        double sim = WordSimilarity.simWord(u.getValue(), v.getValue());
+        return sim;
     }
 }

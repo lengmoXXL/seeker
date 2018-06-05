@@ -38,6 +38,39 @@ public class MongoTranslator {
         return ret;
     }
 
+    public Schema findMaxSchema(LogicStructure logicStructure, List<Schema> schemas) {
+        Schema ret = null;
+        double maxScore = 0;
+        for (Schema schema: schemas) {
+            boolean check = false;
+            double scoreSum = 0;
+            for ( SemanticNode sn: logicStructure.getSemanticNodes()) {
+                double score = 0;
+                SchemaField maxField = null;
+                for (SchemaField sf: schema.getFields()) {
+                    double updateScore = chinesePhraseLib.similarityOf(sn, sf);
+                    if (updateScore > score) {
+                        score = updateScore;
+                        maxField = sf;
+                    }
+                }
+                if (maxField == null || score < 0.5) {
+                    check = true;
+                    break;
+                } else {
+                    scoreSum += score;
+                }
+            }
+            if (!check) {
+                if (scoreSum > maxScore) {
+                    maxScore = scoreSum;
+                    ret = schema;
+                }
+            }
+        }
+        return ret;
+    }
+
     public JSONObject toMongo(LogicStructure ls, Schema schema) {
         Map<SemanticNode, SchemaField> map = findMatch(ls, schema);
         if (map == null) return new JSONObject();
@@ -111,7 +144,7 @@ public class MongoTranslator {
         LogicStructure logicStructure = new LogicStructure(chineseGrammar, chinesePhraseLib);
         for (String subInput: input.split("。")) {
             List<ChineseSentence> sentences = new ArrayList<>();
-            for (String sentence: subInput.split("，")) {
+            for (String sentence: subInput.split("；")) {
                 sentences.add(chineseGrammar.parseSentence(sentence));
             }
             for (ChineseSentence sentence: sentences) {
@@ -123,14 +156,16 @@ public class MongoTranslator {
         Set<String> translations = new HashSet<>();
         List<Schema> schemas = new ArrayList<>();
         LuceneContact luceneContact = new LuceneContact("luceneData/schemas");
-        for (Schema s: luceneContact.allSchemas()) {
-            if (findMatch(logicStructure, s) != null) {
-                schemas.add(s);
-            }
-        }
-        for (Schema s: schemas) {
-            translations.add(toMongo(logicStructure, s).toJSONString());
-        }
+//        for (Schema s: luceneContact.allSchemas()) {
+//            if (findMatch(logicStructure, s) != null) {
+//                schemas.add(s);
+//            }
+//        }
+//        for (Schema s: schemas) {
+//            translations.add(toMongo(logicStructure, s).toJSONString());
+//        }
+
+        translations.add(toMongo(logicStructure, findMaxSchema(logicStructure, luceneContact.allSchemas())).toJSONString());
 
         List<String> ret = new ArrayList<>();
         for (String string: translations) {
@@ -141,9 +176,35 @@ public class MongoTranslator {
 
     public static void main(String[] args) throws IOException {
         ChineseGrammar cg = new ChineseGrammar();
-        ChinesePhraseLib cpl = new PhraseLibBasedOnDict(cg);
-        MongoTranslator translator = new MongoTranslator(cg, cpl);
-        String input = "河流的长度小于1万米。";
-        System.out.println(translator.translate(input));
+        ChinesePhraseLib cpl = new PhraseLibExtendedHowNet(cg);
+        MongoTranslator translator = new MongoTranslatorExtendRules(cg, cpl);
+        String input[] = {
+                "河流的长度小于1万米。",
+                "河流的名称是长江。",
+                "河流的长度是6397000米。",
+                "河流流经的地区包括青海省，西藏藏族自治区，云南省和重庆市。",
+                "行政区缩写是豫。",
+                "行政区人口大于8000万。",
+                "行政区面积小于等于200000。",
+                "行政区包含的城市有洛阳市。",
+                "行政区包含的山包括白云山。",
+                "河流名称是黄河。行政区人口小于1000万；面积大于10万。",
+                "行政区省会是郑州市；包含城市有三门峡市，周口市和商丘市。",
+                "缩写是湘。",
+                "省会城市是长沙市。",
+                "边界省份包含重庆市和湖北省；人口小于9000万。行政区缩写是苏。省会名称是河南省。",
+                "人口在10万以上；边界省份有河北省，辽宁省和天津市。",
+                "行政区面积在100000到300000之间；人口小于等于3千万。河流长度大于100万米。",
+                "河流流经地区包含青海省和江西省；河流长度小于900万米。行政区包含的城市有开封市，洛阳市，安阳市和驻马店市。",
+                "行政区类型是自治区。",
+                "行政区名称是内蒙古自治区；包含的山有大兴安岭。",
+                "河流名字是海河。",
+                "河流流经地区有河南省，湖北省，江苏省和山东省。",
+                "河流的长度小于200万米；流经地区包含河北省和山西省。",
+                "行政区面积小于187000；人口大于90591300。河流流经地区包含吉林省。"
+        };
+        for (int i = 0; i < input.length; i++) {
+            System.out.println(translator.translate(input[i]));
+        }
     }
 }

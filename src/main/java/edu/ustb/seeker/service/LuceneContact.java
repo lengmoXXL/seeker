@@ -117,8 +117,8 @@ public class LuceneContact {
 
 
     public static void main(String[] args) throws IOException {
-        String[] texts = {"类型", "名称", "缩写", "省会城市", "人口", "面积", "城市.名称", "城市.人口", "边界省份", "山.名称", "山.海拔"};
-        String[] types = {"STRING", "STRING", "STRING", "STRING", "NUMBER", "NUMBER", "STRING", "NUMBER", "STRING", "STRING", "NUMBER"};
+        String[] texts = {"河流名称", "河流长度(米)", "河流流经地区"};
+        String[] types = {"STRING", "NUMBER", "STRING"};
         LuceneContact lc = new LuceneContact("luceneData/schemas");
 //        lc.addWhatEver(texts, types);
         Schema schema = new Schema(texts, types);

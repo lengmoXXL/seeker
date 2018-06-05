@@ -106,9 +106,9 @@ public class ExtractorByRule {
         ChineseGrammar chineseGrammar = new ChineseGrammar();
         ChinesePhraseLib chinesePhraseLib = new PhraseLibExtendedHowNet(chineseGrammar);
         ExtractorByRule extractorByRule = new ExtractorByRule(chinesePhraseLib);
-        ChineseSentence sentence = chineseGrammar.parseSentence("在10到100之间");
+        ChineseSentence sentence = chineseGrammar.parseSentence("有河北省，辽宁省和天津市");
         chinesePhraseLib.annotateSemanticType(sentence);
-        System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.NUMBER));
+        System.out.println(extractorByRule.mapping(sentence.getTokens(), SchemaField.STRING));
         Scanner scan = new Scanner(System.in);
         while (true) {
             String input = scan.nextLine();

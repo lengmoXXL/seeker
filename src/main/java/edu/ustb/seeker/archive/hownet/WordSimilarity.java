@@ -224,7 +224,7 @@ public class WordSimilarity {
      * 0-----Primitive<br/> 1-----Relational<br/> 2-----Special
      * </p>
      * 
-     * @param english
+     * @param
      * @return 一个代表类别的整数，其值为1，2，3。
      */
     public static int getPrimitiveType(String str) {
@@ -344,7 +344,11 @@ public class WordSimilarity {
      * @param list2
      * @return
      */
-    public static double simList(List<String> list1, List<String> list2) {
+    public static double simList(List<String> l1, List<String> l2) {
+        List<String> list1 = new ArrayList<>();
+        List<String> list2 = new ArrayList<>();
+        for (String string : l1) list1.add(string);
+        for (String string : l2) list2.add(string);
         if (list1.isEmpty() && list2.isEmpty())
             return 1;
         int m = list1.size();
@@ -470,7 +474,20 @@ public class WordSimilarity {
         for (String name : set) {
             System.out.println(name);
         }*/
-        double simval=simWord("老师","教师");
+        double simval=simWord("名称","长度");
         System.out.println(simval);
+
+        String[] w1 = {"名称", "河流", "产业", "教师", "剪刀", "书本", "乡村", "大小"};
+        String[] w2 = {"长度", "河流的", "工业", "老师", "荧光笔", "书籍", "城市", "面积"};
+
+        for (int i = 0; i < w1.length; i++) {
+            System.out.println("(" + w1[i] + "," + w2[i] + "):" + simWord(w1[i], w2[i]));
+        }
+        for (int i = 0; i < w1.length; i++) {
+            System.out.println("(" + w1[i] + "," + w2[i] + "):" + simWord(w1[i], w2[i]));
+        }
+        for (int i = 0; i < w1.length; i++) {
+            System.out.println("(" + w1[i] + "," + w2[i] + "):" + simWord(w1[i], w2[i]));
+        }
     }
 }
