@@ -7,7 +7,7 @@
 git clone git@github.com:amazinglzy/seeker.git
 ```
 
-下载Stanford Parser的中文Model到`lib`文件夹下。
+下载Stanford Parser的中文Model到`lib`文件夹下(如果没有该文件夹，则在项目根目录下新建)。
 ```sh
 wget https://nlp.stanford.edu/software/stanford-chinese-corenlp-2018-02-27-models.jar
 ```
