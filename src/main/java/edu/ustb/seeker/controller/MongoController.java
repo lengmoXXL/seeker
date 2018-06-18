@@ -68,7 +68,9 @@ public class MongoController {
             } else {
                 List<String> translations = translator.translate(nlQuery);
                 if (returnDocuments) {
-                    return new MongoResult("Not Implemented yet.");
+//                    return new MongoResult("Not Implemented yet.");
+                    return new MongoNLResults("ok", translations, mc.count(translations.get(0), collection),
+                            mc.find(translations.get(0), collection, from, size));
                 } else {
                     return new MongoNLResults("ok", translations, 0, new ArrayList<Document>());
                 }

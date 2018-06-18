@@ -477,8 +477,8 @@ public class WordSimilarity {
         double simval=simWord("名称","长度");
         System.out.println(simval);
 
-        String[] w1 = {"名称", "河流", "产业", "教师", "剪刀", "书本", "乡村", "大小"};
-        String[] w2 = {"长度", "河流的", "工业", "老师", "荧光笔", "书籍", "城市", "面积"};
+        String[] w1 = {"名称", "河流", "河流", "教师", "剪刀", "书本", "乡村", "大小"};
+        String[] w2 = {"长度", "长度", "名称", "老师", "荧光笔", "书籍", "城市", "面积"};
 
         for (int i = 0; i < w1.length; i++) {
             System.out.println("(" + w1[i] + "," + w2[i] + "):" + simWord(w1[i], w2[i]));
